@@ -151,8 +151,8 @@ follow these steps:
 
 ## Translations
 
-If you’d like to help translate AB Download Manager into another language, or improve existing translations, you can do
-so on Crowdin. Here’s how:
+If you'd like to help translate AB Download Manager into another language, or improve existing translations, you can do
+so on Crowdin. Here's how:
 
 - Visit the project in [Crowdin](https://crowdin.com/project/ab-download-manager)
 - Please DO NOT submit translations via pull requests.
@@ -169,3 +169,86 @@ Let's make a better Download Manager together! ❤️
 ## Support the Project
 
 If you'd like to support the project, you can find details on how to donate in the [DONATE.md](DONATE.md) file.
+
+# AB Download Manager
+
+A modern download manager built with Kotlin and Jetpack Compose for Desktop, featuring a beautiful Windows 11-style interface.
+
+## Features
+
+- Modern Windows 11 Fluent Design interface
+- Fast and efficient downloads
+- Pause/Resume downloads
+- Download queue management
+- Batch downloads
+- Dark/Light theme support
+- System tray integration
+- Windows 11 Mica effect support
+
+## Building from Source
+
+### Prerequisites
+
+- JDK 17 or later
+- Gradle 7.0 or later
+- Windows 10/11 for best experience
+
+### Build Steps
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/ab-download-manager.git
+cd ab-download-manager
+```
+
+2. Build the project:
+```bash
+./gradlew build
+```
+
+3. Create distributable:
+```bash
+./gradlew createReleaseDistributable
+```
+
+The built files will be available in `desktop/app/build/compose/binaries/main-release/app/`.
+
+## Development
+
+### Project Structure
+
+- `desktop/app/src/main/kotlin` - Main application code
+- `desktop/app/src/main/resources` - Application resources
+- `shared/app/src/main/kotlin` - Shared code between modules
+- `downloader/core` - Download engine
+- `downloader/monitor` - Download monitoring
+
+### Running in Development Mode
+
+```bash
+./gradlew run
+```
+
+### Building for Release
+
+```bash
+./gradlew createRelease
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [Jetpack Compose for Desktop](https://github.com/JetBrains/compose-jb)
+- [Material 3 Design](https://m3.material.io/)
+- [Windows 11 Design Guidelines](https://learn.microsoft.com/en-us/windows/apps/design/)

@@ -1,0 +1,84 @@
+name: Build and Publish
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      create_release:
+        description: 'Create a new release'
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle
+    
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+    
+    - name: Build with Gradle
+      run: ./gradlew build
+    
+    - name: Create Release Distributable
+      run: ./gradlew createReleaseDistributable
+    
+    - name: Get version
+      id: get_version
+      run: |
+        $version = (Get-Content "gradle.properties" | Select-String "VERSION_NAME").ToString().Split("=")[1].Trim()
+        echo "VERSION=$version" >> $env:GITHUB_OUTPUT
+    
+    - name: Create Release
+      if: github.event_name == 'workflow_dispatch' && github.event.inputs.create_release == 'true'
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: v${{ steps.get_version.outputs.VERSION }}
+        name: Release v${{ steps.get_version.outputs.VERSION }}
+        draft: false
+        prerelease: true
+        files: |
+          desktop/app/build/compose/binaries/main-release/app/*.exe
+          desktop/app/build/compose/binaries/main-release/app/*.msi
+        body: |
+          ## What's New
+          
+          ### Features
+          - Modern Windows 11 Fluent Design interface
+          - Fast and efficient downloads
+          - Pause/Resume downloads
+          - Download queue management
+          - Batch downloads
+          - Dark/Light theme support
+          - System tray integration
+          - Windows 11 Mica effect support
+          
+          ### Changes
+          - Updated to version ${{ steps.get_version.outputs.VERSION }}
+          - Improved Windows 11 compatibility
+          - Enhanced UI/UX
+          
+          ### Installation
+          1. Download the .msi installer
+          2. Run the installer
+          3. Follow the installation wizard
+          
+          ### Requirements
+          - Windows 10/11
+          - 4GB RAM minimum
+          - 100MB free disk space
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 

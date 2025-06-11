@@ -113,26 +113,15 @@ val desktopPackageName = "com.abdownloadmanager.desktop"
 compose {
     desktop {
         application {
-//            val getProguardConfigurationsTask = tasks.getProguardConfigurations.get()
             buildTypes.release.proguard {
                 isEnabled.set(false)
-//                obfuscate.set(false)
-//                optimize.set(true)
-//                configurationFiles.from(
-//                    project.fileTree("proguard"),
-//                    getProguardConfigurationsTask.outputs.files.asFileTree.filter {
-//                        !it.name.contains("r8")
-//                    },
-//                )
             }
 
-            // Define the main class for the application.
             mainClass = "$desktopPackageName.AppKt"
             nativeDistributions {
                 modules("java.instrument", "jdk.unsupported")
-                targetFormats(Msi, Deb)
+                targetFormats(Msi, Exe)
                 if (Platform.getCurrentPlatform() == Platform.Desktop.Linux) {
-                    // filekit library requires this module in linux.
                     modules("jdk.security.auth")
                 }
                 packageVersion = getAppVersionStringForPackaging()
@@ -141,20 +130,6 @@ compose {
                 appResourcesRootDir.set(project.layout.projectDirectory.dir("resources"))
                 val menuGroupName = getPrettifiedAppName()
                 licenseFile.set(rootProject.file("LICENSE"))
-                linux {
-                    debPackageVersion = getAppVersionStringForPackaging(Deb)
-                    rpmPackageVersion = getAppVersionStringForPackaging(Rpm)
-                    appCategory = "Network"
-                    iconFile = project.file("icons/icon.png")
-                    menuGroup = menuGroupName
-                    shortcut = true
-                }
-                macOS {
-                    pkgPackageVersion = getAppVersionStringForPackaging(Pkg)
-                    dmgPackageVersion = getAppVersionStringForPackaging(Dmg)
-                    iconFile = project.file("icons/icon.icns")
-                    jvmArgs("-Dapple.awt.enableTemplateImages=true")
-                }
                 windows {
                     exePackageVersion = getAppVersionStringForPackaging(Exe)
                     msiPackageVersion = getAppVersionStringForPackaging(Msi)
@@ -165,6 +140,24 @@ compose {
                     shortcut = true
                     menuGroup = menuGroupName
                     menu = true
+                    exePackageVersion = getAppVersionStringForPackaging(Exe)
+                    msiPackageVersion = getAppVersionStringForPackaging(Msi)
+                    upgradeUuid = "18159995-d967-4CD2-8885-77BFA97CFA9F"
+                    iconFile = project.file("icons/icon.ico")
+                    console = false
+                    dirChooser = true
+                    shortcut = true
+                    menuGroup = menuGroupName
+                    menu = true
+                    jvmArgs("-Dapple.awt.enableTemplateImages=true")
+                    jvmArgs("-Dcompose.desktop.windows.forceAero=true")
+                    jvmArgs("-Dcompose.desktop.windows.forceMica=true")
+                }
+                macOS {
+                    pkgPackageVersion = getAppVersionStringForPackaging(Pkg)
+                    dmgPackageVersion = getAppVersionStringForPackaging(Dmg)
+                    iconFile = project.file("icons/icon.icns")
+                    jvmArgs("-Dapple.awt.enableTemplateImages=true")
                 }
             }
         }
@@ -411,4 +404,22 @@ fun TargetFormat.toInstallerTargetFormat(): InstallerTargetFormat {
         Exe -> InstallerTargetFormat.Exe
         Msi -> InstallerTargetFormat.Msi
     }
+}
+
+tasks.register("createRelease") {
+    dependsOn("createReleaseDistributable")
+    doLast {
+        val releaseDir = project.buildDir.resolve("release")
+        releaseDir.mkdirs()
+        
+        copy {
+            from("${project.buildDir}/compose/binaries/main-release/app")
+            into(releaseDir)
+            include("*.exe", "*.msi")
+        }
+    }
+}
+
+tasks.register("cleanBuild") {
+    dependsOn("clean", "build")
 }
