@@ -3,11 +3,9 @@ package com.abdownloadmanager.shared.utils.ui
 import androidx.compose.ui.graphics.vector.ImageVector
 import ir.amirab.util.compose.IconSource
 
-context (IMyIcons)
-fun ImageVector.asIconSource(requiredTint: Boolean = true) = IconSource.VectorIconSource(this, requiredTint)
+fun IMyIcons.ImageVector.asIconSource(requiredTint: Boolean = true) = IconSource.VectorIconSource(this, requiredTint)
 
-context (IMyIcons)
-fun String.asIconSource(requiredTint: Boolean = true) = IconSource.ResourceIconSource(this, requiredTint)
+fun IMyIcons.String.asIconSource(requiredTint: Boolean = true) = IconSource.ResourceIconSource(this, requiredTint)
 
 interface IMyIcons {
     val appIcon: IconSource

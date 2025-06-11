@@ -10,8 +10,9 @@ import ir.amirab.util.flow.withPrevious
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.io.File
+import kotlinx.coroutines.FlowPreview
 
-
+@OptIn(FlowPreview::class)
 class RemovedDownloadsFromDiskTracker(
     private val downloadMonitor: IDownloadMonitor,
     private val scope: CoroutineScope,
@@ -119,7 +120,7 @@ private sealed interface Change {
     data object NotChange : Change
 }
 
-
+@OptIn(FlowPreview::class)
 private fun <T> Flow<List<T>>.changes(): Flow<List<Pair<T, Change>>> {
     return withPrevious { previous, current ->
         if (previous == null) {

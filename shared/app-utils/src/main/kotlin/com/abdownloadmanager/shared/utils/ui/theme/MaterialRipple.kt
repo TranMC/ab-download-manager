@@ -193,7 +193,6 @@ object RippleDefaults {
  * own custom ripple that queries your design system theme values directly using
  * [createRippleModifierNode].
  */
-@Suppress("OPT_IN_MARKER_ON_WRONG_TARGET")
 val LocalRippleConfiguration: ProvidableCompositionLocal<RippleConfiguration?> =
     compositionLocalOf { RippleConfiguration() }
 

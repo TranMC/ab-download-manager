@@ -7,12 +7,12 @@ import ir.amirab.util.flow.mapStateFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
 import java.io.File
+import java.io.Serializable
 
-sealed interface CanAddResult {
+sealed interface CanAddResult : Serializable {
     data class DownloadAlreadyExists(val itemId: Long) : CanAddResult
     data object InvalidFileName : CanAddResult
     data object CantWriteInThisFolder : CanAddResult
-
     data object InvalidUrl : CanAddResult
     data object CanAdd : CanAddResult
 }
@@ -26,18 +26,18 @@ class AddDownloadChecker(
     private val parentScope: CoroutineScope,
 ) {
 
-    val canAddResult = MutableStateFlow(null as CanAddResult?)
-    val canAdd = canAddResult.mapStateFlow() {
+    val canAddResult = MutableStateFlow<CanAddResult?>(null)
+    val canAdd = canAddResult.mapStateFlow<CanAddResult?, Boolean> {
         it is CanAddResult.CanAdd
     }
-    val isDuplicate = canAddResult.mapStateFlow() {
+    val isDuplicate = canAddResult.mapStateFlow<CanAddResult?, Boolean> {
         it is CanAddResult.DownloadAlreadyExists
     }
 
     val link = MutableStateFlow(initialLink)
     val name = MutableStateFlow(initialName)
     val folder = MutableStateFlow(initialFolder)
-    val length = MutableStateFlow(null as Long?)
+    val length = MutableStateFlow<Long?>(null)
 
     init {
         combine(

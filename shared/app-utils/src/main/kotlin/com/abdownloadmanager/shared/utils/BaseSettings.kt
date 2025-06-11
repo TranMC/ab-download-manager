@@ -9,7 +9,9 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlinx.coroutines.FlowPreview
 
+@OptIn(FlowPreview::class)
 abstract class BaseStorage<T> : KoinComponent {
     val scope: CoroutineScope by inject()
 
@@ -36,6 +38,7 @@ abstract class BaseStorage<T> : KoinComponent {
     }
 }
 
+@OptIn(FlowPreview::class)
 abstract class ConfigBaseSettingsByMapConfig<T>(
     private val dataStore: DataStore<MapConfig>,
     private val lens: Lens<MapConfig, T>,
@@ -60,6 +63,7 @@ abstract class ConfigBaseSettingsByMapConfig<T>(
     }
 }
 
+@OptIn(FlowPreview::class)
 abstract class ConfigBaseSettingsByJson<T>(
     private val dataStore: DataStore<T>,
 ) : BaseStorage<T>(), KoinComponent {

@@ -4,7 +4,9 @@ import androidx.compose.runtime.*
 import ir.amirab.util.flow.DerivedStateFlow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.FlowPreview
 
+@OptIn(FlowPreview::class)
 @Composable
 fun <T> MutableStateFlow<T>.collectAsModifiableState(): MutableState<T> {
     val upStream = this
@@ -23,6 +25,7 @@ fun <T> MutableStateFlow<T>.collectAsModifiableState(): MutableState<T> {
     return state
 }
 
+@OptIn(FlowPreview::class)
 fun <T> MutableStateFlow<T>.asMutableState(
     scope: CoroutineScope,
 ): MutableState<T> {
@@ -37,6 +40,8 @@ fun <T> MutableStateFlow<T>.asMutableState(
         }.launchIn(scope)
     return state
 }
+
+@OptIn(FlowPreview::class)
 fun <T> StateFlow<T>.asState(
     scope: CoroutineScope,
 ): State<T> {
@@ -47,6 +52,8 @@ fun <T> StateFlow<T>.asState(
     }.launchIn(scope)
     return state
 }
+
+@OptIn(FlowPreview::class)
 fun <T> Flow<T>.asState(
     scope: CoroutineScope,
     initialValue:T,
@@ -59,9 +66,11 @@ fun <T> Flow<T>.asState(
     return state
 }
 
-inline fun <T>MutableState<T>.asState(): State<T> {
+fun <T>MutableState<T>.asState(): State<T> {
     return this as State<T>
 }
+
+@OptIn(FlowPreview::class)
 fun <T> State<T>.asStateFlow(): StateFlow<T> {
     val getValue = { value }
     return DerivedStateFlow(
