@@ -16,5 +16,6 @@ dependencies {
     implementation(libs.compose.runtime)
     implementation(libs.compose.animation)
     
-    debugImplementation(libs.compose.ui.tooling)
+    // Debug dependencies
+    implementation(libs.compose.ui.tooling)
 }

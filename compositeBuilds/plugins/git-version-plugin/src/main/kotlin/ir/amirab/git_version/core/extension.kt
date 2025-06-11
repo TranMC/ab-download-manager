@@ -41,32 +41,32 @@ class ResolvedScope() {
         _commit = function
     }
 
-    private fun matchTag(it: GitReference.TagInfo): String? {
+    private fun matchTag(tagInfo: GitReference.TagInfo): String? {
         for ((regex, matchedRef) in tagFilter) {
-            val matched = regex.toRegex().matchEntire(it.shortenName)
+            val matched = regex.toRegex().matchEntire(tagInfo.shortenName)
             if (matched != null) {
-                matchedRef(MatchedRefWithResult(it, matched))?.let { it ->
-                    return it
+                matchedRef(MatchedRefWithResult(tagInfo, matched))?.let { result ->
+                    return result
                 } ?: continue
             }
         }
         return null
     }
 
-    private fun matchBranch(it: GitReference.BranchInfo): String? {
+    private fun matchBranch(branchInfo: GitReference.BranchInfo): String? {
         for ((regex, matchedRef) in branchFilter) {
-            val matched = regex.toRegex().matchEntire(it.shortenName)
+            val matched = regex.toRegex().matchEntire(branchInfo.shortenName)
             if (matched != null) {
-                matchedRef(MatchedRefWithResult(it, matched))?.let { it ->
-                    return it
+                matchedRef(MatchedRefWithResult(branchInfo, matched))?.let { result ->
+                    return result
                 } ?: continue
             }
         }
         return null
     }
 
-    private fun matchCommit(it: GitReference.ShaReference): String? {
-        return _commit(MatchedRef(it))
+    private fun matchCommit(commitInfo: GitReference.ShaReference): String? {
+        return _commit(MatchedRef(commitInfo))
     }
 
     fun match(gitReference: GitReference): String? {

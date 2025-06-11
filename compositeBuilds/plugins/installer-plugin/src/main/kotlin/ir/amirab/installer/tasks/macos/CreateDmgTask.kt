@@ -108,9 +108,6 @@ abstract class CreateDmgTask : DefaultTask() {
         val executable = dmgExecutable.get()
         val context = createDmgContext()
 
-        // Use launchctl to run in the user's GUI session.
-        // This is required because create-dmg uses AppleScript to manipulate Finder,
-        // which only works inside an active user session with GUI access.
         val fullCommand = buildString {
             append("launchctl asuser $(id -u) ")
             append("${executable.absolutePath.asQuoted()} ")
@@ -129,9 +126,9 @@ abstract class CreateDmgTask : DefaultTask() {
 
         logger.debug("Creating DMG with shell command: {}", fullCommand)
 
-        project.exec {
-            commandLine("sh", "-c", fullCommand)
-            isIgnoreExitValue = false
+        project.exec { spec ->
+            spec.commandLine("sh", "-c", fullCommand)
+            spec.isIgnoreExitValue = false
         }
     }
 }

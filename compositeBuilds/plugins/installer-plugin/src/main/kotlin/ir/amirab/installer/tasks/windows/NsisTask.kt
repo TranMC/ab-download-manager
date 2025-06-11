@@ -80,13 +80,10 @@ abstract class NsisTask : DefaultTask() {
         ).apply(context)
         logger.debug("NSIS Script:")
         logger.debug(script)
-        project.exec {
-            executable(
-                executable,
-            )
-            args("-")
-            standardInput = ByteArrayInputStream(script.toByteArray())
-
+        project.exec { spec ->
+            spec.executable(executable)
+            spec.args("-")
+            spec.standardInput = ByteArrayInputStream(script.toByteArray())
         }
     }
 }
