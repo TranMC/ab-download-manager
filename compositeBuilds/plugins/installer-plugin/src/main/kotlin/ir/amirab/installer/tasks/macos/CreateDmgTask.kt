@@ -106,12 +106,12 @@ abstract class CreateDmgTask : DefaultTask() {
     @TaskAction
     fun createDmg() {
         val appName = extension.appName.get()
-        val inputDir = extension.inputDir.get().asFile
+        val inputDir = extension.inputDir.get()
         val appFileName = extension.appFileName.get()
-        val backgroundImage = extension.backgroundImage.get().asFile
+        val backgroundImage = extension.backgroundImage.get()
         val outputFileName = extension.outputFileName.get()
-        val licenseFile = extension.licenseFile.get().asFile
-        val volumeIcon = extension.volumeIcon.get().asFile
+        val licenseFile = extension.licenseFile.get()
+        val volumeIcon = extension.volumeIcon.get()
 
         val tempDir = temporaryDir
         val dmgDir = File(tempDir, "dmg")

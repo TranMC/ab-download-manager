@@ -76,11 +76,11 @@ abstract class NsisTask : DefaultTask() {
         val appVersion = commonParams.get().appVersion
         val appDisplayVersion = commonParams.get().appDisplayVersion
         val appDataDirName = commonParams.get().appDataDirName
-        val inputDir = sourceFolder.get().asFile
+        val inputDir = sourceFolder.get()
         val outputFileName = outputFileName.get()
-        val licenseFile = commonParams.get().licenceFile.asFile
-        val iconFile = commonParams.get().iconFile.asFile
-        val nsisTemplate = nsisTemplate.get().asFile
+        val licenseFile = commonParams.get().licenceFile
+        val iconFile = commonParams.get().iconFile
+        val nsisTemplate = nsisTemplate.get()
         val extraParams = extraParams.get()
 
         val tempDir = temporaryDir
