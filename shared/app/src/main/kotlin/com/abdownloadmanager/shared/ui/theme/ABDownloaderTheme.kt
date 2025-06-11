@@ -1,185 +1,170 @@
 package com.abdownloadmanager.shared.ui.theme
 
-import ir.amirab.util.compose.action.buildMenu
-import com.abdownloadmanager.shared.utils.darker
-import com.abdownloadmanager.shared.utils.div
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.animation.*
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
-import androidx.compose.ui.window.rememberPopupPositionProviderAtPosition
-import com.abdownloadmanager.shared.ui.widget.menu.custom.SubMenu
-import com.abdownloadmanager.shared.utils.ui.*
-import com.abdownloadmanager.shared.utils.ui.theme.*
-import com.abdownloadmanager.shared.utils.ui.theme.UiScaledContent
-import ir.amirab.util.compose.asStringSource
-
-/*
-fun MyColors.asMaterial2Colors(): Colors {
-    return Colors(
-        primary = primary,
-        primaryVariant = primaryVariant,
-        secondary = secondary,
-        secondaryVariant = secondaryVariant,
-        background = background,
-        surface = surface,
-        error = error,
-        onPrimary = onPrimary,
-        onSecondary = onSecondary,
-        onBackground = onBackground,
-        onSurface = onSurface,
-        onError = onError,
-        isLight = isLight
-    )
-}
-*/
-
-
-val darkColors = MyColors(
-    //used
-    primary = Color(0xFF4791BF),
-    onPrimary = Color.White,
-    secondary = Color(0xFFB85DFF),
-    onSecondary = Color.White,
-    background = Color(0xFF16161E),
-    onBackground = Color(0xFFAAAAAA),
-    onSurface = Color(0xFFAAAAAA),
-//        surface = Color(0xff191922),
-    surface = Color(0xFF22222A),
-    error = Color(0xffff5757),
-    onError = Color.White,
-    success = Color(0xff69BA5A),
-    onSuccess = Color.White,
-    warning = Color(0xFFffbe56),
-    onWarning = Color.White,
-    info = Color(0xFF2f77d4),
-    onInfo = Color.White,
-    isLight = false,
-    name = "Dark",
-    id = "dark",
-)
-val lightColors = MyColors(
-    primary = Color(0xFF4791BF),
-    primaryVariant = Color(0xFFAFCEFF).darker(0.5f),
-    onPrimary = Color.Black,
-    secondary = Color(0xFFB85DFF),
-    onSecondary = Color.White,
-//        primary = Color(0xFF3B82F6),
-    background = Color.White.darker(0.1f),
-    backgroundVariant = Color(0xFFfafafa),
-    onBackground = Color(0xFF353535),
-    onSurface = Color(0xFF353535),
-//        surface = Color(0xff191922),
-    surface = Color.White.darker(0.15f),
-    error = Color(0xffff5757),
-    onError = Color.White,
-    success = Color(0xff14a600),
-    onSuccess = Color.White,
-    warning = Color(0xFFffbe56),
-    onWarning = Color.White,
-    info = Color(0xFF2f77d4),
-    onInfo = Color.White,
-    isLight = true,
-    name = "Light",
-    id = "light",
-)
-
-private val textSizes = TextSizes(
-    xs = 8.sp,
-    sm = 10.sp,
-    base = 12.sp,
-    lg = 14.sp,
-    xl = 16.sp,
-)
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.TextStyle
 
 @Composable
 fun ABDownloaderTheme(
-    myColors: MyColors,
-    uiScale: Float? = null,
-    content: @Composable () -> Unit,
+    myColors: ABDownloaderThemeColors = ABDownloaderThemeColors(),
+    uiScale: Float = 1f,
+    content: @Composable () -> Unit
 ) {
-    val systemDensity = LocalDensity.current
-    CompositionLocalProvider(
-        LocalMyColors provides AnimatedColors(myColors, tween(500)),
-        LocalUiScale provides uiScale,
-        LocalSystemDensity provides systemDensity,
-    ) {
-        CompositionLocalProvider(
-            LocalContextMenuRepresentation provides myContextMenuRepresentation(),
-            LocalScrollbarStyle provides myDefaultScrollBarStyle(),
-            LocalIndication provides ripple(),
-            LocalContentColor provides myColors.onBackground,
-            LocalContentAlpha provides 1f,
-            LocalTextSizes provides textSizes,
-            LocalTextStyle provides LocalTextStyle.current.copy(
-                lineHeight = TextUnit.Unspecified,
-                fontSize = textSizes.base,
-            ),
-        ) {
-            // it is overridden by [Window] Composable,
-            // but I put this here. maybe I need this outside of window  scope!
-            UiScaledContent {
+    val colorScheme = if (isSystemInDarkTheme()) {
+        darkColorScheme(
+            primary = myColors.primary,
+            onPrimary = myColors.onPrimary,
+            primaryContainer = myColors.primaryVariant,
+            onPrimaryContainer = myColors.onPrimary,
+            secondary = myColors.secondary,
+            onSecondary = myColors.onSecondary,
+            secondaryContainer = myColors.secondaryVariant,
+            onSecondaryContainer = myColors.onSecondary,
+            background = Color(0xFF202020),
+            onBackground = Color(0xFFE4E4E4),
+            surface = Color(0xFF2D2D2D),
+            onSurface = Color(0xFFE4E4E4),
+            error = myColors.error,
+            onError = myColors.onError,
+            surfaceVariant = Color(0xFF3D3D3D),
+            onSurfaceVariant = Color(0xFFE4E4E4)
+        )
+    } else {
+        lightColorScheme(
+            primary = myColors.primary,
+            onPrimary = myColors.onPrimary,
+            primaryContainer = myColors.primaryVariant,
+            onPrimaryContainer = myColors.onPrimary,
+            secondary = myColors.secondary,
+            onSecondary = myColors.onSecondary,
+            secondaryContainer = myColors.secondaryVariant,
+            onSecondaryContainer = myColors.onSecondary,
+            background = Color(0xFFF5F5F5),
+            onBackground = Color(0xFF1F1F1F),
+            surface = Color(0xFFFFFFFF),
+            onSurface = Color(0xFF1F1F1F),
+            error = myColors.error,
+            onError = myColors.onError,
+            surfaceVariant = Color(0xFFF0F0F0),
+            onSurfaceVariant = Color(0xFF1F1F1F)
+        )
+    }
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        shapes = Shapes,
+        content = {
+            Surface(
+                modifier = Modifier.fillMaxSize(),
+                color = MaterialTheme.colorScheme.background
+            ) {
                 content()
             }
         }
-    }
-}
-
-private class MyContextMenuRepresentation : ContextMenuRepresentation {
-    @Composable
-    override fun Representation(state: ContextMenuState, items: () -> List<ContextMenuItem>) {
-        val status = state.status
-        if (status !is ContextMenuState.Status.Open) {
-            return
-        }
-        val contextItems = items()
-        val menuItems = remember(contextItems) {
-            buildMenu {
-                contextItems.map {
-                    item(title = it.label.asStringSource(), onClick = {
-                        it.onClick()
-                    })
-                }
-            }
-        }
-        val onCloseRequest = { state.status = ContextMenuState.Status.Closed }
-        Popup(
-            properties = PopupProperties(
-                focusable = true,
-            ),
-            onDismissRequest = onCloseRequest,
-            popupPositionProvider = rememberPopupPositionProviderAtPosition(
-                positionPx = status.rect.center
-            ),
-        ) {
-            SubMenu(menuItems, onCloseRequest)
-        }
-    }
-
-}
-
-@Composable
-private fun myContextMenuRepresentation(): ContextMenuRepresentation {
-    return remember {
-        MyContextMenuRepresentation()
-    }
-}
-
-@Composable
-private fun myDefaultScrollBarStyle(): ScrollbarStyle {
-    return ScrollbarStyle(
-        minimalHeight = 16.dp,
-        thickness = 12.dp,
-        shape = RoundedCornerShape(4.dp),
-        hoverDurationMillis = 300,
-        unhoverColor = myColors.onBackground / 10,
-        hoverColor = myColors.onBackground / 30
     )
 }
+
+data class ABDownloaderThemeColors(
+    val primary: Color = Color(0xFF0078D4), // Windows 11 accent color
+    val primaryVariant: Color = Color(0xFF106EBE),
+    val secondary: Color = Color(0xFF2B88D8),
+    val secondaryVariant: Color = Color(0xFF1A6FC1),
+    val background: Color = Color(0xFFF5F5F5),
+    val surface: Color = Color(0xFFFFFFFF),
+    val error: Color = Color(0xFFD83B01),
+    val onPrimary: Color = Color(0xFFFFFFFF),
+    val onSecondary: Color = Color(0xFFFFFFFF),
+    val onBackground: Color = Color(0xFF1F1F1F),
+    val onSurface: Color = Color(0xFF1F1F1F),
+    val onError: Color = Color(0xFFFFFFFF),
+    val elevation: Dp = 8.dp,
+    val animationDuration: Int = 300
+)
+
+private val Shapes = Shapes(
+    small = RoundedCornerShape(4.dp),
+    medium = RoundedCornerShape(8.dp),
+    large = RoundedCornerShape(12.dp)
+)
+
+private val Typography = Typography(
+    headlineLarge = TextStyle(
+        fontSize = 32.sp,
+        lineHeight = 40.sp,
+        fontWeight = FontWeight.SemiBold,
+        letterSpacing = 0.sp
+    ),
+    headlineMedium = TextStyle(
+        fontSize = 28.sp,
+        lineHeight = 36.sp,
+        fontWeight = FontWeight.SemiBold,
+        letterSpacing = 0.sp
+    ),
+    headlineSmall = TextStyle(
+        fontSize = 24.sp,
+        lineHeight = 32.sp,
+        fontWeight = FontWeight.SemiBold,
+        letterSpacing = 0.sp
+    ),
+    titleLarge = TextStyle(
+        fontSize = 22.sp,
+        lineHeight = 28.sp,
+        fontWeight = FontWeight.SemiBold,
+        letterSpacing = 0.sp
+    ),
+    titleMedium = TextStyle(
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        fontWeight = FontWeight.Medium,
+        letterSpacing = 0.15.sp
+    ),
+    titleSmall = TextStyle(
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        fontWeight = FontWeight.Medium,
+        letterSpacing = 0.1.sp
+    ),
+    bodyLarge = TextStyle(
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        fontWeight = FontWeight.Normal,
+        letterSpacing = 0.5.sp
+    ),
+    bodyMedium = TextStyle(
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        fontWeight = FontWeight.Normal,
+        letterSpacing = 0.25.sp
+    ),
+    bodySmall = TextStyle(
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        fontWeight = FontWeight.Normal,
+        letterSpacing = 0.4.sp
+    ),
+    labelLarge = TextStyle(
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        fontWeight = FontWeight.Medium,
+        letterSpacing = 0.1.sp
+    ),
+    labelMedium = TextStyle(
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+        fontWeight = FontWeight.Medium,
+        letterSpacing = 0.5.sp
+    ),
+    labelSmall = TextStyle(
+        fontSize = 11.sp,
+        lineHeight = 16.sp,
+        fontWeight = FontWeight.Medium,
+        letterSpacing = 0.5.sp
+    )
+)
