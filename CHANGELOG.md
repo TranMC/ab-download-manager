@@ -34,6 +34,11 @@
 - Translations updated
 - Minor UI improvements
 
+## 1.6.4
+
+### Improve
+- Giao diện UI trên windows 11
+
 ## 1.6.3
 
 ### Added
