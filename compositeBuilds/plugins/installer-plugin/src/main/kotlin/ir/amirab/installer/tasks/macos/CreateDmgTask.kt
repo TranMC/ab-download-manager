@@ -55,7 +55,7 @@ abstract class CreateDmgTask : DefaultTask() {
     @get:InputFile
     abstract val volumeIcon: Property<File>
 
-    @get:InputFile
+    @get:Input
     abstract val licenseFile: Property<File>
 
     @get:Input
@@ -104,31 +104,43 @@ abstract class CreateDmgTask : DefaultTask() {
     private fun String.asQuoted() = "\"${this}\""
 
     @TaskAction
-    fun run() {
-        val executable = dmgExecutable.get()
-        val context = createDmgContext()
+    fun createDmg() {
+        val appName = extension.appName.get()
+        val inputDir = extension.inputDir.get().asFile
+        val appFileName = extension.appFileName.get()
+        val backgroundImage = extension.backgroundImage.get().asFile
+        val outputFileName = extension.outputFileName.get()
+        val licenseFile = extension.licenseFile.get().asFile
+        val volumeIcon = extension.volumeIcon.get().asFile
 
-        val fullCommand = buildString {
-            append("launchctl asuser $(id -u) ")
-            append("${executable.absolutePath.asQuoted()} ")
-            append("--volname ${context["app_name"]} ")
-            append("--background ${context["background_image"]} ")
-            append("--window-size ${context["window_width"]} ${context["window_height"]} ")
-            append("--icon-size ${context["icon_size"]} ")
-            append("--icon ${context["icon_file"]} ${context["app_offset_x"]} ${context["icons_y"]} ")
-            append("--app-drop-link ${context["folder_offset_x"]} ${context["icons_y"]} ")
-            append("--eula ${context["license_file"]} ")
-            append("--volicon ${context["volume_icon"]} ")
-            append("--window-pos ${context["window_x"]} ${context["window_y"]} ")
-            append("${context["output_file"]} ")
-            append("${context["input_dir"]}")
+        val tempDir = temporaryDir
+        val dmgDir = File(tempDir, "dmg")
+        dmgDir.mkdirs()
+
+        val appDir = File(dmgDir, appFileName)
+        project.copy {
+            from(inputDir)
+            into(appDir)
         }
 
-        logger.debug("Creating DMG with shell command: {}", fullCommand)
+        val backgroundDir = File(dmgDir, ".background")
+        backgroundDir.mkdirs()
+        project.copy {
+            from(backgroundImage)
+            into(backgroundDir)
+        }
 
-        project.exec { spec ->
-            spec.commandLine("sh", "-c", fullCommand)
-            spec.isIgnoreExitValue = false
+        val dmgFile = File(project.buildDir, "$outputFileName.dmg")
+        project.exec {
+            workingDir = tempDir
+            commandLine(
+                "hdiutil", "create",
+                "-volname", appName,
+                "-srcfolder", dmgDir,
+                "-ov",
+                "-format", "UDZO",
+                dmgFile.absolutePath
+            )
         }
     }
 }

@@ -70,20 +70,46 @@ abstract class NsisTask : DefaultTask() {
     }
 
     @TaskAction
-    fun run() {
-        val executable = nsisExecutable.get()
-        val scriptTemplate = nsisTemplate.get()
-        val handlebars = Handlebars()
-        val context = createHandleBarContext()
-        val script = handlebars.compileInline(
-            scriptTemplate.readText()
-        ).apply(context)
-        logger.debug("NSIS Script:")
-        logger.debug(script)
-        project.exec { spec ->
-            spec.executable(executable)
-            spec.args("-")
-            spec.standardInput = ByteArrayInputStream(script.toByteArray())
+    fun createInstaller() {
+        val appName = commonParams.get().appName
+        val appDisplayName = commonParams.get().appDisplayName
+        val appVersion = commonParams.get().appVersion
+        val appDisplayVersion = commonParams.get().appDisplayVersion
+        val appDataDirName = commonParams.get().appDataDirName
+        val inputDir = sourceFolder.get().asFile
+        val outputFileName = outputFileName.get()
+        val licenseFile = commonParams.get().licenceFile.asFile
+        val iconFile = commonParams.get().iconFile.asFile
+        val nsisTemplate = nsisTemplate.get().asFile
+        val extraParams = extraParams.get()
+
+        val tempDir = temporaryDir
+        val nsisScript = File(tempDir, "installer.nsi")
+        
+        val scriptContent = nsisTemplate.readText()
+            .replace("\${APP_NAME}", appName)
+            .replace("\${APP_DISPLAY_NAME}", appDisplayName)
+            .replace("\${APP_VERSION}", appVersion)
+            .replace("\${APP_DISPLAY_VERSION}", appDisplayVersion)
+            .replace("\${APP_DATA_DIR_NAME}", appDataDirName)
+            .replace("\${INPUT_DIR}", inputDir.absolutePath)
+            .replace("\${OUTPUT_FILE}", outputFileName)
+            .replace("\${LICENSE_FILE}", licenseFile.absolutePath)
+            .replace("\${ICON_FILE}", iconFile.absolutePath)
+
+        extraParams.forEach { (key, value) ->
+            scriptContent.replace("\${$key}", value.toString())
+        }
+
+        nsisScript.writeText(scriptContent)
+
+        val outputFile = File(project.buildDir, "$outputFileName.exe")
+        project.exec {
+            workingDir = tempDir
+            commandLine(
+                "makensis",
+                nsisScript.absolutePath
+            )
         }
     }
 }
